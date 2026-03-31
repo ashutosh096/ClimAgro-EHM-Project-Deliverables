@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EHM — Service Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════
+   RESET & ROOT TOKENS
+════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  /* EHM Brand Greens */
+  --g900:#08251a; --g800:#1a5c38; --g700:#236b44;
+  --g600:#2d8055; --g500:#3a9466; --g400:#4aab74;
+  --g300:#7ec99e; --g200:#b6dfc9; --g100:#d8f0e4; --g50:#eef8f3;
+  /* Teal */
+  --t700:#1a6b6b; --t500:#2a9494; --t200:#9fd8d8; --t100:#d0eeee; --t50:#eaf6f6;
+  /* Earth */
+  --e700:#7a5230; --e500:#a07040; --e200:#d4b48c; --e100:#f0e3d0; --e50:#faf4ec;
+  /* Neutrals */
+  --white:#ffffff; --ivory:#f8f6f2; --cream:#f2ede6;
+  --s100:#e8e2d8; --s300:#c4bfb5; --s500:#8a8278; --s700:#4a4640; --ink:#1e1c18;
+  /* Shadows */
+  --sh-sm:0 1px 4px rgba(26,92,56,.07),0 2px 8px rgba(26,92,56,.04);
+  --sh-md:0 4px 20px rgba(26,92,56,.1),0 2px 8px rgba(26,92,56,.05);
+  --sh-lg:0 12px 48px rgba(26,92,56,.14),0 4px 16px rgba(26,92,56,.07);
+  --sh-xl:0 24px 64px rgba(26,92,56,.18),0 8px 24px rgba(26,92,56,.09);
+}
+
+/* ════════════════════════════════════════
+   BODY — GREEN GRADIENT FROM FILE _4
+════════════════════════════════════════ */
+body{
+  background:linear-gradient(160deg,#dff4f0 0%,#e8f7f4 30%,#eef9f6 55%,#e4f4ef 80%,#d8f0eb 100%);
+  color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
+}
+
+/* ════════════════════════════════════════
+   BACKGROUND LAYERS
+════════════════════════════════════════ */
+/* Layer 1 — illustrated SVG scene (fixed) */
+#bg-scene{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
+  overflow:hidden;
+}
+/* Layer 2 — animated canvas particles */
+#bg-canvas{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;opacity:.6;
+}
+/* Layer 3 — light scrim — green tones from file _4 */
+#bg-scrim{
+  position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%,rgba(224,246,242,.90) 0%,rgba(224,246,242,.68) 60%,transparent 100%),
+    linear-gradient(180deg,rgba(224,246,242,.80) 0%,rgba(224,246,242,.50) 40%,rgba(224,246,242,.72) 100%);
+}
+
+/* ════════════════════════════════════════
+   SKIP LINK
+════════════════════════════════════════ */
+.skip{
+  position:absolute;top:-56px;left:16px;
+  background:var(--g800);color:#fff;
+  padding:9px 18px;border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+  text-decoration:none;z-index:9999;transition:top .2s;
+}
+.skip:focus{top:14px}
+
+/* ════════════════════════════════════════
+   PAGE LAYOUT
+════════════════════════════════════════ */
+.page{
+  position:relative;z-index:3;
+  max-width:1320px;margin:0 auto;
+  padding:72px 52px 96px;
+}
+@media(max-width:900px){.page{padding:56px 28px 72px}}
+@media(max-width:560px){.page{padding:40px 18px 60px}}
+
+/* ════════════════════════════════════════
+   BRAND BAR — file _2 layout + file _4 info panel
+════════════════════════════════════════ */
+.brand-bar{
+  display:flex;align-items:center;gap:12px;
+  justify-content:space-between;
+  margin-bottom:52px;
+  opacity:0;transform:translateY(-14px);
+}
+.brand-left{display:flex;align-items:center;gap:12px}
+.brand-bar.in{animation:fadeDown .7s cubic-bezier(.16,1,.3,1) forwards}
+.brand-logo{
+  width:42px;height:42px;border-radius:11px;
+  background:linear-gradient(135deg,var(--g800),var(--g600));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 4px 14px rgba(26,92,56,.3);
+  color:#fff;
+}
+.brand-name{
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+  color:var(--g800);letter-spacing:.02em;
+}
+.brand-sep{width:1px;height:18px;background:var(--s300);margin:0 4px}
+.brand-tagline{font-size:12px;color:var(--s500);font-weight:400}
+
+/* ── Top-right info panel (from file _4) ── */
+.info-panel{
+  display:flex;align-items:stretch;gap:0;
+  border:1px solid rgba(26,92,56,.12);
+  border-radius:14px;background:rgba(255,255,255,.72);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 2px 16px rgba(26,92,56,.08);
+  overflow:hidden;flex-shrink:0;
+}
+@media(max-width:900px){.info-panel{display:none}}
+.info-cell{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 18px;
+  border-right:1px solid rgba(26,92,56,.08);
+}
+.info-cell:last-child{border-right:none}
+.info-cell-icon{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  background:var(--g50);border:1px solid var(--g100);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--g700);
+}
+.info-cell-label{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  color:var(--s500);letter-spacing:.16em;text-transform:uppercase;
+  line-height:1;margin-bottom:3px;
+}
+.info-cell-value{
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  color:var(--g800);line-height:1.2;
+}
+.info-cell-value a{color:var(--g800);text-decoration:none}
+.info-cell-value a:hover{text-decoration:underline}
+
+/* ════════════════════════════════════════
+   SECTION HEADER
+════════════════════════════════════════ */
+.section-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--g50);border:1px solid var(--g200);
+  color:var(--g800);
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:6px 16px 6px 12px;border-radius:100px;
+  margin-bottom:22px;
+}
+.badge-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--g600);
+  box-shadow:0 0 0 3px var(--g100);
+  animation:pulseDot 2.4s ease-in-out infinite;
+}
+@keyframes pulseDot{
+  0%,100%{box-shadow:0 0 0 3px var(--g100)}
+  50%{box-shadow:0 0 0 5px var(--g200)}
+}
+
+.header-block{opacity:0;transform:translateY(20px)}
+.header-block.in{animation:fadeUp .85s .1s cubic-bezier(.16,1,.3,1) forwards}
+
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,4.8vw,62px);
+  font-weight:600;color:var(--ink);
+  line-height:1.08;letter-spacing:-1.5px;margin-bottom:18px;
+}
+h1 em{font-style:italic;font-weight:700;color:var(--g800)}
+.underline-word{
+  position:relative;display:inline-block;color:var(--g800);
+}
+.underline-word::after{
+  content:'';position:absolute;
+  left:0;bottom:-3px;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--g600),var(--g200));
+  border-radius:2px;transform:scaleX(0);transform-origin:left;
+  transition:transform .9s .7s cubic-bezier(.16,1,.3,1);
+}
+.header-block.in .underline-word::after{transform:scaleX(1)}
+.tagline{
+  font-size:16.5px;color:var(--s500);
+  max-width:480px;line-height:1.74;font-weight:400;
+  margin-bottom:36px;
+}
+
+/* ════════════════════════════════════════
+   STATS ROW
+════════════════════════════════════════ */
+.stats-row{
+  display:flex;align-items:center;width:fit-content;
+  border:1px solid var(--s100);border-radius:16px;
+  background:var(--white);box-shadow:var(--sh-sm);
+  overflow:hidden;margin-bottom:56px;
+  opacity:0;transform:translateY(14px);
+}
+.stats-row.in{animation:fadeUp .8s .26s cubic-bezier(.16,1,.3,1) forwards}
+.stat-item{
+  padding:18px 34px;border-right:1px solid var(--s100);text-align:center;
+}
+.stat-item:last-child{border-right:none}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;font-size:34px;
+  font-weight:700;color:var(--g800);line-height:1;letter-spacing:-1px;
+}
+.stat-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--s500);letter-spacing:.18em;text-transform:uppercase;margin-top:4px;
+}
+
+/* ════════════════════════════════════════
+   SECTION RULE
+════════════════════════════════════════ */
+.section-rule{
+  height:1px;width:0;
+  background:linear-gradient(90deg,var(--g600),var(--g200) 40%,transparent 80%);
+  margin-bottom:48px;
+  transition:width 1s .42s cubic-bezier(.16,1,.3,1);
+}
+.section-rule.in{width:100%}
+
+/* ════════════════════════════════════════
+   FLIP CARD GRID
+════════════════════════════════════════ */
+.grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:24px;margin-bottom:60px;
+}
+@media(max-width:1040px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px) {.grid{grid-template-columns:1fr}}
+
+/* ── Flip wrapper ── */
+.flip-wrap{
+  perspective:1200px;
+  height:520px;
+  opacity:0;transform:translateY(44px);
+  transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);
+}
+.flip-wrap.in{opacity:1;transform:translateY(0)}
+
+/* ── Inner — the rotating piece ── */
+.flip-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .75s cubic-bezier(.5,0,.2,1);
+  cursor:pointer;
+}
+/* Auto-flip on hover for desktop */
+@media(hover:hover){
+  .flip-wrap:hover .flip-inner{transform:rotateY(180deg)}
+}
+/* JS-toggled flip for touch */
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+
+/* ── Front & Back shared ── */
+.flip-front,.flip-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;overflow:hidden;
+}
+
+/* ── FRONT FACE ── */
+.flip-front{
+  background:var(--white);
+  border:1px solid var(--s100);
+  box-shadow:var(--sh-sm);
+  padding:38px 32px 34px;
+  display:flex;flex-direction:column;
+  transition:border-color .3s,box-shadow .4s;
+}
+.flip-wrap:hover .flip-front,.flip-wrap.flipped .flip-front{
+  border-color:var(--card-light);
+  box-shadow:var(--sh-xl),0 0 0 1px var(--card-light);
+}
+
+/* Front top bar */
+.f-bar{
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--card-accent),var(--card-light));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.flip-wrap:hover .f-bar,.flip-wrap.flipped .f-bar{transform:scaleX(1)}
+
+/* Front bg circle */
+.f-circle{
+  position:absolute;top:-40px;right:-40px;
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,var(--card-pale) 0%,transparent 72%);
+  opacity:0;transition:opacity .4s;pointer-events:none;
+}
+.flip-wrap:hover .f-circle,.flip-wrap.flipped .f-circle{opacity:1}
+
+.f-num{
+  position:absolute;top:12px;right:18px;
+  font-family:'Cormorant Garamond',serif;font-size:76px;font-weight:700;
+  color:var(--s100);line-height:1;user-select:none;pointer-events:none;
+  transition:color .4s;
+}
+.flip-wrap:hover .f-num,.flip-wrap.flipped .f-num{color:var(--card-pale)}
+
+.f-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--card-pale);color:var(--card-accent);
+  border:1px solid var(--card-light);
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:5px 12px;border-radius:100px;margin-bottom:26px;width:fit-content;
+}
+.f-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--card-accent)}
+
+.f-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:54px;height:54px;border-radius:14px;
+  background:var(--card-pale);border:1px solid var(--card-light);
+  color:var(--card-accent);margin-bottom:20px;
+  transition:all .45s cubic-bezier(.16,1,.3,1);
+}
+.flip-wrap:hover .f-icon,.flip-wrap.flipped .f-icon{
+  background:var(--card-accent);color:#fff;
+  transform:scale(1.1) rotate(-4deg);
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+}
+
+.f-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,2.3vw,24px);font-weight:700;
+  color:var(--ink);margin:0 0 6px;line-height:1.2;letter-spacing:-.3px;
+}
+.f-sub{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--card-accent);letter-spacing:.12em;margin:0 0 14px;
+  opacity:.7;transition:opacity .3s;
+}
+.flip-wrap:hover .f-sub,.flip-wrap.flipped .f-sub{opacity:1}
+.f-rule{
+  height:1.5px;background:linear-gradient(90deg,var(--card-accent),transparent);
+  width:28px;margin-bottom:14px;
+  transition:width .5s cubic-bezier(.16,1,.3,1);
+}
+.flip-wrap:hover .f-rule,.flip-wrap.flipped .f-rule{width:56px}
+.f-desc{
+  font-size:14.5px;color:var(--s700);line-height:1.72;
+  margin:0 0 20px;font-weight:400;flex:1;
+}
+.f-metrics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+.f-metric{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:.09em;text-transform:uppercase;
+  color:var(--s500);background:var(--ivory);
+  padding:3px 9px;border-radius:5px;border:1px solid var(--s100);
+  transition:all .3s;
+}
+.flip-wrap:hover .f-metric,.flip-wrap.flipped .f-metric{
+  color:var(--card-accent);background:var(--card-pale);border-color:var(--card-light);
+}
+.f-hint{
+  display:flex;align-items:center;gap:7px;
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;
+  color:var(--card-accent);letter-spacing:.1em;font-weight:500;
+  margin-top:auto;
+}
+.f-hint svg{transition:transform .3s}
+.flip-wrap:hover .f-hint svg{transform:rotateY(180deg) scale(1.15)}
+
+/* ── BACK FACE ── */
+.flip-back{
+  transform:rotateY(180deg);
+  background:linear-gradient(150deg,var(--card-bg1) 0%,var(--card-bg2) 100%);
+  border:1px solid var(--card-light);
+  padding:36px 32px 32px;
+  display:flex;flex-direction:column;
+  box-shadow:var(--sh-lg);
+}
+
+/* Back face decoration */
+.b-deco{
+  position:absolute;bottom:-40px;right:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.b-deco2{
+  position:absolute;top:-30px;left:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.b-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.05) 1px,transparent 1px,transparent 36px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.05),rgba(255,255,255,.05) 1px,transparent 1px,transparent 36px);
+}
+
+.b-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,.6);letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.b-tag::before{content:'';width:16px;height:1px;background:rgba(255,255,255,.4)}
+
+.b-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,2.2vw,24px);font-weight:700;
+  color:#fff;margin-bottom:12px;line-height:1.2;letter-spacing:-.2px;
+}
+.b-rule{height:1.5px;width:40px;background:rgba(255,255,255,.35);margin-bottom:18px}
+
+/* Back details list */
+.b-list{
+  list-style:none;display:flex;flex-direction:column;gap:11px;
+  margin-bottom:20px;flex:1;
+}
+.b-list li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:13.5px;color:rgba(255,255,255,.88);line-height:1.55;
+}
+.b-list li::before{
+  content:'';flex-shrink:0;
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.6);margin-top:6px;
+}
+
+/* Back stats strip */
+.b-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(255,255,255,.15);
+  border-radius:10px;overflow:hidden;margin-bottom:20px;
+}
+.b-stat{
+  background:rgba(255,255,255,.08);
+  padding:12px 10px;text-align:center;
+}
+.b-stat-n{
+  font-family:'Cormorant Garamond',serif;font-size:26px;
+  font-weight:700;color:#fff;line-height:1;letter-spacing:-.5px;
+}
+.b-stat-l{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  color:rgba(255,255,255,.5);letter-spacing:.14em;
+  text-transform:uppercase;margin-top:3px;
+}
+
+/* Back CTA */
+.b-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  background:rgba(255,255,255,.18);
+  border:1.5px solid rgba(255,255,255,.35);
+  color:#fff;padding:12px 20px;border-radius:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;outline:none;
+  transition:all .3s cubic-bezier(.16,1,.3,1);backdrop-filter:blur(4px);
+}
+.b-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.6);transform:translateY(-2px)}
+.b-btn:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:3px}
+
+/* ════════════════════════════════════════
+   CTA STRIP
+════════════════════════════════════════ */
+.cta{
+  position:relative;overflow:hidden;border-radius:20px;padding:48px 52px;
+  background:linear-gradient(135deg,var(--g900) 0%,var(--g800) 55%,var(--g700) 100%);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:28px;box-shadow:var(--sh-xl);
+  opacity:0;transform:translateY(28px);
+  transition:opacity .9s .5s,transform .9s .5s cubic-bezier(.16,1,.3,1);
+}
+.cta.in{opacity:1;transform:translateY(0)}
+.cta-orb1{position:absolute;top:-50px;right:60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);pointer-events:none}
+.cta-orb2{position:absolute;bottom:-70px;right:-30px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,var(--g500) 0%,transparent 65%);opacity:.25;pointer-events:none}
+.cta-grid{position:absolute;inset:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.03) 1px,transparent 1px,transparent 40px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.03),rgba(255,255,255,.03) 1px,transparent 1px,transparent 40px)}
+.cta-eyebrow{font-family:'JetBrains Mono',monospace;font-size:9.5px;
+  color:var(--g200);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px}
+.cta-eyebrow::before{content:'';width:20px;height:1px;background:var(--g400)}
+.cta h2{font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,2.5vw,30px);color:#fff;font-weight:600;
+  letter-spacing:-.3px;line-height:1.25}
+.cta h2 span{color:var(--g200);font-style:italic;font-weight:400}
+.cta-actions{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0;position:relative}
+.cta-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#fff;color:var(--g800);border:none;
+  padding:14px 30px;border-radius:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;outline:none;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+  transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+.cta-primary:hover{background:var(--g50);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.28)}
+.cta-primary:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.cta-secondary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:transparent;color:rgba(255,255,255,.78);
+  border:1.5px solid rgba(255,255,255,.28);padding:14px 24px;border-radius:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  transition:all .3s;outline:none;
+}
+.cta-secondary:hover{color:#fff;border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.08)}
+.cta-secondary:focus-visible{outline:2px solid rgba(255,255,255,.5);outline-offset:3px}
+
+/* ════════════════════════════════════════
+   MODALS
+════════════════════════════════════════ */
+.modal-backdrop{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(8,22,14,.5);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-backdrop.open{opacity:1;pointer-events:all}
+.modal{
+  position:relative;max-width:660px;width:100%;
+  background:var(--white);border:1px solid var(--s100);
+  border-radius:24px;padding:48px 48px 42px;
+  transform:translateY(20px) scale(.97);
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 40px 100px rgba(0,0,0,.2),0 8px 32px rgba(26,92,56,.12);
+}
+.modal-backdrop.open .modal{transform:translateY(0) scale(1)}
+@media(max-width:560px){.modal{padding:32px 22px 28px}}
+.modal-bar{position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--g800),var(--g400));border-radius:24px 24px 0 0}
+.modal-close{
+  position:absolute;top:18px;right:18px;
+  background:var(--ivory);border:1px solid var(--s100);
+  color:var(--s500);width:34px;height:34px;border-radius:50%;
+  cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;outline:none;
+}
+.modal-close:hover{background:var(--s100);color:var(--ink)}
+.modal-close:focus-visible{outline:2px solid var(--g800);outline-offset:2px}
+.modal-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--g50);border:1px solid var(--g200);color:var(--g800);
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:4px 12px;border-radius:100px;margin-bottom:14px;
+}
+.modal h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,3vw,32px);font-weight:700;
+  color:var(--ink);letter-spacing:-.4px;line-height:1.15;margin-bottom:8px;
+}
+.modal-sub{font-size:15px;color:var(--s500);line-height:1.6;margin-bottom:28px}
+.modal-rule{height:1px;background:linear-gradient(90deg,var(--g200),transparent);margin-bottom:28px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+@media(max-width:480px){.contact-grid{grid-template-columns:1fr}}
+.contact-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:16px 18px;border-radius:12px;
+  background:var(--ivory);border:1px solid var(--s100);
+  transition:border-color .25s,background .25s;
+}
+.contact-item:hover{background:var(--g50);border-color:var(--g200)}
+.contact-item.full{grid-column:1/-1}
+.c-icon{
+  width:34px;height:34px;flex-shrink:0;border-radius:9px;
+  background:var(--g50);border:1px solid var(--g200);
+  display:flex;align-items:center;justify-content:center;color:var(--g800);
+}
+.c-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  color:var(--s500);letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px}
+.c-val{font-size:14px;color:var(--ink);font-weight:500;line-height:1.45}
+.c-val a{color:var(--g800);text-decoration:none;transition:color .2s}
+.c-val a:hover{color:var(--g600);text-decoration:underline}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.m-primary{
+  flex:1;min-width:130px;display:inline-flex;align-items:center;
+  justify-content:center;gap:8px;
+  background:var(--g800);color:#fff;border:none;
+  padding:12px 22px;border-radius:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  box-shadow:0 4px 16px rgba(26,92,56,.3);
+  transition:all .3s cubic-bezier(.16,1,.3,1);outline:none;
+}
+.m-primary:hover{background:var(--g700);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,92,56,.38)}
+.m-primary:focus-visible{outline:2px solid var(--g800);outline-offset:3px}
+.m-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--s700);
+  border:1.5px solid var(--s100);padding:12px 20px;border-radius:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  transition:all .25s;outline:none;
+}
+.m-secondary:hover{border-color:var(--g200);color:var(--g800);background:var(--g50)}
+.m-secondary:focus-visible{outline:2px solid var(--g800);outline-offset:3px}
+
+/* ════════════════════════════════════════
+   KEYFRAMES
+════════════════════════════════════════ */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp  {from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
+@keyframes floatLeaf{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(4deg)}}
+@keyframes floatLeaf2{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes ripple{0%{r:30;opacity:.5}100%{r:90;opacity:0}}
+@keyframes drift{0%{transform:translate(0,0)}25%{transform:translate(8px,-12px)}50%{transform:translate(16px,-6px)}75%{transform:translate(4px,-18px)}100%{transform:translate(0,0)}}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media(max-width:640px){
+  .stats-row{width:100%}
+  .stat-item{padding:14px 18px;flex:1}
+  .cta{padding:32px 24px}
+  .cta-actions{width:100%}
+  .cta-primary,.cta-secondary{flex:1;justify-content:center}
+  .flip-wrap{height:auto;perspective:none}
+  .flip-inner{transform:none!important;height:auto}
+  .flip-front,.flip-back{position:relative;inset:auto;backface-visibility:visible;-webkit-backface-visibility:visible}
+  .flip-back{transform:none;margin-top:12px}
+  .flip-front{border-radius:20px 20px 0 0}
+  .flip-back{border-radius:0 0 20px 20px;border-top:none}
+}
+</style>
+</head>
+<body>
+
+<a href="#services" class="skip">Skip to services</a>
+
+<!-- ════ BACKGROUND: SVG ILLUSTRATED SCENE (from file _4) ════ -->
+<div id="bg-scene" aria-hidden="true">
+<svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eef8f3"/>
+      <stop offset="40%" stop-color="#f5f9f6"/>
+      <stop offset="100%" stop-color="#e8f4ee"/>
+    </linearGradient>
+    <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8e8d4"/>
+      <stop offset="100%" stop-color="#a8d4ba"/>
+    </linearGradient>
+    <linearGradient id="hillGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b6dfc9"/>
+      <stop offset="100%" stop-color="#8ec9a8"/>
+    </linearGradient>
+    <linearGradient id="hillGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4eddf"/>
+      <stop offset="100%" stop-color="#b6dfc9"/>
+    </linearGradient>
+    <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a8d4e8"/>
+      <stop offset="100%" stop-color="#7fbcd8"/>
+    </linearGradient>
+    <linearGradient id="trunkGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8a6040"/>
+      <stop offset="100%" stop-color="#6a4820"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1440" height="900" fill="url(#skyGrad)"/>
+
+  <!-- Sun halo -->
+  <circle cx="1280" cy="120" r="180" fill="rgba(255,240,200,.28)"/>
+  <circle cx="1280" cy="120" r="120" fill="rgba(255,232,160,.22)"/>
+  <circle cx="1280" cy="120" r="70"  fill="rgba(255,220,120,.18)"/>
+
+  <!-- Far hills -->
+  <ellipse cx="200"  cy="720" rx="420" ry="180" fill="#d4eddf" opacity=".7"/>
+  <ellipse cx="700"  cy="740" rx="500" ry="160" fill="#c8e8d4" opacity=".6"/>
+  <ellipse cx="1300" cy="730" rx="440" ry="170" fill="#d0ead8" opacity=".65"/>
+
+  <!-- Mid hills -->
+  <path d="M0,760 Q200,620 480,680 Q700,730 900,660 Q1100,590 1300,660 Q1400,700 1440,680 L1440,900 L0,900 Z"
+        fill="url(#hillGrad2)" opacity=".75"/>
+  <path d="M0,810 Q240,700 500,740 Q720,770 960,720 Q1160,680 1440,740 L1440,900 L0,900 Z"
+        fill="url(#hillGrad1)" opacity=".8"/>
+
+  <!-- River / water body -->
+  <ellipse cx="720" cy="850" rx="360" ry="40" fill="url(#waterGrad)" opacity=".55"/>
+  <ellipse cx="720" cy="852" rx="300" ry="28" fill="#b8dcf0" opacity=".35"/>
+  <ellipse cx="660" cy="852" rx="55" ry="8"  fill="none" stroke="#8ec8e8" stroke-width="1" opacity=".5"/>
+  <ellipse cx="780" cy="855" rx="40" ry="6"  fill="none" stroke="#8ec8e8" stroke-width="1" opacity=".4"/>
+  <ellipse cx="720" cy="848" rx="70" ry="10" fill="none" stroke="#8ec8e8" stroke-width="1" opacity=".45"/>
+
+  <!-- Ground -->
+  <rect x="0" y="860" width="1440" height="40" fill="url(#groundGrad)" opacity=".7"/>
+
+  <!-- Trees Left Cluster -->
+  <g style="animation:floatLeaf 8s ease-in-out infinite">
+    <rect x="88" y="650" width="14" height="120" fill="url(#trunkGrad)" rx="3"/>
+    <ellipse cx="95"  cy="630" rx="48" ry="58" fill="#1a5c38" opacity=".85"/>
+    <ellipse cx="95"  cy="618" rx="38" ry="46" fill="#236b44" opacity=".8"/>
+    <ellipse cx="95"  cy="608" rx="28" ry="34" fill="#2d8055" opacity=".75"/>
+  </g>
+  <g style="animation:floatLeaf2 10s ease-in-out infinite 1s">
+    <rect x="148" y="680" width="11" height="90" fill="url(#trunkGrad)" rx="2"/>
+    <ellipse cx="153" cy="663" rx="38" ry="46" fill="#1a5c38" opacity=".8"/>
+    <ellipse cx="153" cy="652" rx="30" ry="36" fill="#2d8055" opacity=".75"/>
+    <ellipse cx="153" cy="643" rx="22" ry="26" fill="#3a9466" opacity=".7"/>
+  </g>
+  <g style="animation:floatLeaf 12s ease-in-out infinite 2s">
+    <rect x="48" y="700" width="9" height="70" fill="url(#trunkGrad)" rx="2"/>
+    <ellipse cx="52"  cy="688" rx="30" ry="38" fill="#236b44" opacity=".78"/>
+    <ellipse cx="52"  cy="678" rx="22" ry="28" fill="#3a9466" opacity=".72"/>
+  </g>
+
+  <!-- Trees Right Cluster -->
+  <g style="animation:floatLeaf2 9s ease-in-out infinite .5s">
+    <rect x="1310" y="640" width="14" height="130" fill="url(#trunkGrad)" rx="3"/>
+    <ellipse cx="1317" cy="618" rx="52" ry="62" fill="#1a5c38" opacity=".85"/>
+    <ellipse cx="1317" cy="605" rx="40" ry="48" fill="#236b44" opacity=".8"/>
+    <ellipse cx="1317" cy="594" rx="28" ry="34" fill="#2d8055" opacity=".75"/>
+  </g>
+  <g style="animation:floatLeaf 11s ease-in-out infinite 1.5s">
+    <rect x="1362" y="670" width="11" height="100" fill="url(#trunkGrad)" rx="2"/>
+    <ellipse cx="1367" cy="652" rx="40" ry="50" fill="#1a5c38" opacity=".8"/>
+    <ellipse cx="1367" cy="640" rx="30" ry="38" fill="#2d8055" opacity=".75"/>
+    <ellipse cx="1367" cy="630" rx="22" ry="28" fill="#3a9466" opacity=".7"/>
+  </g>
+  <g style="animation:floatLeaf2 13s ease-in-out infinite 3s">
+    <rect x="1395" y="690" width="9" height="80" fill="url(#trunkGrad)" rx="2"/>
+    <ellipse cx="1399" cy="678" rx="28" ry="36" fill="#236b44" opacity=".76"/>
+  </g>
+
+  <!-- Centre Trees -->
+  <g style="animation:sway 14s ease-in-out infinite 2s">
+    <rect x="618" y="720" width="8" height="60" fill="url(#trunkGrad)" rx="2"/>
+    <ellipse cx="622" cy="710" rx="26" ry="32" fill="#1a5c38" opacity=".7"/>
+    <ellipse cx="622" cy="700" rx="18" ry="22" fill="#2d8055" opacity=".65"/>
+  </g>
+  <g style="animation:sway 16s ease-in-out infinite">
+    <rect x="808" y="715" width="8" height="65" fill="url(#trunkGrad)" rx="2"/>
+    <ellipse cx="812" cy="704" rx="28" ry="34" fill="#1a5c38" opacity=".7"/>
+    <ellipse cx="812" cy="694" rx="20" ry="24" fill="#2d8055" opacity=".65"/>
+  </g>
+
+  <!-- Birds -->
+  <g opacity=".35" style="animation:drift 18s ease-in-out infinite">
+    <path d="M340,180 Q346,174 352,180" stroke="#1a5c38" stroke-width="1.5" fill="none"/>
+    <path d="M360,172 Q366,166 372,172" stroke="#1a5c38" stroke-width="1.5" fill="none"/>
+    <path d="M378,182 Q384,176 390,182" stroke="#1a5c38" stroke-width="1.5" fill="none"/>
+  </g>
+  <g opacity=".3" style="animation:drift 22s ease-in-out infinite 4s">
+    <path d="M1040,140 Q1046,134 1052,140" stroke="#236b44" stroke-width="1.5" fill="none"/>
+    <path d="M1058,148 Q1064,142 1070,148" stroke="#236b44" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Floating Leaves -->
+  <g style="animation:floatLeaf 7s ease-in-out infinite">
+    <ellipse cx="420" cy="300" rx="10" ry="6" fill="#4aab74" opacity=".25" transform="rotate(-30,420,300)"/>
+  </g>
+  <g style="animation:floatLeaf2 9s ease-in-out infinite 1.5s">
+    <ellipse cx="1020" cy="260" rx="8" ry="5" fill="#2d8055" opacity=".2" transform="rotate(20,1020,260)"/>
+  </g>
+  <g style="animation:floatLeaf 11s ease-in-out infinite 3s">
+    <ellipse cx="680"  cy="200" rx="7" ry="4" fill="#3a9466" opacity=".18" transform="rotate(-15,680,200)"/>
+  </g>
+
+  <!-- Water Ripple Animation -->
+  <circle cx="720" cy="852" r="30" fill="none" stroke="#7fbcd8" stroke-width="1" opacity="0">
+    <animate attributeName="r"       values="20;80"  dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0"  dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="680" cy="856" r="20" fill="none" stroke="#7fbcd8" stroke-width=".8" opacity="0">
+    <animate attributeName="r"       values="10;50"  dur="3.5s" begin="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.35;0" dur="3.5s" begin="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="760" cy="850" r="25" fill="none" stroke="#7fbcd8" stroke-width=".8" opacity="0">
+    <animate attributeName="r"       values="15;60"  dur="4.5s" begin="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0"  dur="4.5s" begin="2.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>
+</div>
+
+<!-- ════ CANVAS PARTICLES ════ -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<!-- ════ SCRIM ════ -->
+<div id="bg-scrim" aria-hidden="true"></div>
+
+<main class="page">
+
+  <!-- Brand bar — file _2 layout + file _4 info panel -->
+  <div class="brand-bar">
+    <div class="brand-left">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 2C8 6 4 10 4 14a8 8 0 0 0 16 0c0-4-4-8-8-12z"/>
+          <path d="M12 12c0-3 2-5 2-8"/>
+        </svg>
+      </div>
+      <span class="brand-name">EHM Consultancy</span>
+      <div class="brand-sep" aria-hidden="true"></div>
+      <span class="brand-tagline">Earth · Hydro · Management</span>
+    </div>
+    <!-- Top-right info panel from file _4 -->
+    <nav class="info-panel" aria-label="EHM quick info">
+      <div class="info-cell">
+        <div class="info-cell-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <div class="info-cell-body">
+          <div class="info-cell-label">Based in</div>
+          <div class="info-cell-value">Kanpur, UP — India</div>
+        </div>
+      </div>
+      <div class="info-cell">
+        <div class="info-cell-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="info-cell-body">
+          <div class="info-cell-label">Email</div>
+          <div class="info-cell-value"><a href="mailto:info@ehmconsultancy.co.in">info@ehmconsultancy.co.in</a></div>
+        </div>
+      </div>
+      <div class="info-cell">
+        <div class="info-cell-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+          </svg>
+        </div>
+        <div class="info-cell-body">
+          <div class="info-cell-label">Website</div>
+          <div class="info-cell-value"><a href="https://www.ehmconsultancy.co.in" target="_blank" rel="noopener">ehmconsultancy.co.in</a></div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Header -->
+  <div class="header-block">
+    <div class="section-badge">
+      <span class="badge-dot" aria-hidden="true"></span>
+      Our Services
+    </div>
+    <h1>Core <em>Service</em><br/><span class="underline-word">Pillars</span></h1>
+    <p class="tagline">Bridging ecological science with strategic advisory — helping organisations build a resilient, climate-ready future.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" role="list" aria-label="Company highlights">
+    <div class="stat-item" role="listitem">
+      <div class="stat-num" data-count="5" data-suffix="+">0+</div>
+      <div class="stat-lbl">Years Active</div>
+    </div>
+    <div class="stat-item" role="listitem">
+      <div class="stat-num" data-count="30" data-suffix="+">0+</div>
+      <div class="stat-lbl">Projects</div>
+    </div>
+    <div class="stat-item" role="listitem">
+      <div class="stat-num" data-count="40" data-suffix="+">0+</div>
+      <div class="stat-lbl">Clients</div>
+    </div>
+    <div class="stat-item" role="listitem">
+      <div class="stat-num" data-count="8" data-suffix="">0</div>
+      <div class="stat-lbl">States</div>
+    </div>
+  </div>
+
+  <div class="section-rule" aria-hidden="true"></div>
+
+  <!-- ════ FLIP CARDS ════ -->
+  <section id="services" aria-label="EHM consulting services">
+    <div class="grid">
+
+      <!-- CARD 1: Sustainability Assessment -->
+      <div class="flip-wrap" data-delay="0"
+           style="--card-accent:var(--g800);--card-light:var(--g200);--card-pale:var(--g50);
+                  --card-bg1:#0d3320;--card-bg2:#1a5c38">
+        <div class="flip-inner" role="group" aria-label="Sustainability Assessment service card">
+          <!-- FRONT -->
+          <div class="flip-front" tabindex="0"
+               aria-label="Sustainability Assessment — hover or tap to flip for more details">
+            <div class="f-bar"    aria-hidden="true"></div>
+            <div class="f-circle" aria-hidden="true"></div>
+            <div class="f-num"    aria-hidden="true">01</div>
+            <div class="f-tag" aria-hidden="true">
+              <span class="f-tag-dot"></span>Assessment
+            </div>
+            <div class="f-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" width="26" height="26">
+                <circle cx="24" cy="24" r="19" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M14 33C14 23 20 16 24 12C28 16 34 23 34 33" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M19 33C19 27 21.5 22 24 20C26.5 22 29 27 29 33" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="12" y1="33" x2="36" y2="33" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="24" cy="20" r="1.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <h3 class="f-title">Sustainability Assessment</h3>
+            <p class="f-sub">Measure · Benchmark · Transform</p>
+            <div class="f-rule" aria-hidden="true"></div>
+            <p class="f-desc">Comprehensive evaluations of your organisation's environmental footprint — from carbon inventories and lifecycle analyses to ESG gap assessments aligned with GRI, BRSR, and ISO 14001.</p>
+            <div class="f-metrics" role="list" aria-label="Focus areas">
+              <span role="listitem" class="f-metric">Carbon Footprint</span>
+              <span role="listitem" class="f-metric">ESG Benchmarking</span>
+              <span role="listitem" class="f-metric">ISO 14001</span>
+              <span role="listitem" class="f-metric">BRSR</span>
+            </div>
+            <div class="f-hint" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3M12 7v10M9 10l3-3 3 3"/>
+              </svg>
+              Hover to see more details
+            </div>
+          </div>
+          <!-- BACK -->
+          <div class="flip-back" aria-label="Sustainability Assessment — detailed information">
+            <div class="b-deco"  aria-hidden="true"></div>
+            <div class="b-deco2" aria-hidden="true"></div>
+            <div class="b-grid"  aria-hidden="true"></div>
+            <p class="b-tag">Deep Dive</p>
+            <h3 class="b-title">Sustainability Assessment</h3>
+            <div class="b-rule" aria-hidden="true"></div>
+            <ul class="b-list" aria-label="Service details">
+              <li>Baseline carbon footprint measurement across Scope 1, 2 &amp; 3 emissions</li>
+              <li>ESG performance gap analysis benchmarked against GRI, BRSR &amp; CDP standards</li>
+              <li>Science-Based Targets (SBTi) pathway development and validation support</li>
+              <li>Environmental Management System (EMS) design aligned with ISO 14001</li>
+              <li>Sustainability reporting and stakeholder disclosure documentation</li>
+            </ul>
+            <div class="b-stats" aria-label="Service statistics">
+              <div class="b-stat"><div class="b-stat-n">80+</div><div class="b-stat-l">Assessments</div></div>
+              <div class="b-stat"><div class="b-stat-n">15+</div><div class="b-stat-l">Industries</div></div>
+              <div class="b-stat"><div class="b-stat-n">100%</div><div class="b-stat-l">Compliant</div></div>
+            </div>
+            <button class="b-btn" onclick="openService('green')"
+                    aria-label="Enquire about Sustainability Assessment service">
+              Enquire About This Service
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: Climate Risk Intelligence -->
+      <div class="flip-wrap" data-delay="150"
+           style="--card-accent:var(--t700);--card-light:var(--t200);--card-pale:var(--t50);
+                  --card-bg1:#0d2a2a;--card-bg2:#1a6b6b">
+        <div class="flip-inner" role="group" aria-label="Climate Risk Intelligence service card">
+          <!-- FRONT -->
+          <div class="flip-front" tabindex="0"
+               aria-label="Climate Risk Intelligence — hover or tap to flip for more details">
+            <div class="f-bar"    aria-hidden="true"></div>
+            <div class="f-circle" aria-hidden="true"></div>
+            <div class="f-num"    aria-hidden="true">02</div>
+            <div class="f-tag" aria-hidden="true">
+              <span class="f-tag-dot"></span>Intelligence
+            </div>
+            <div class="f-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" width="26" height="26">
+                <path d="M8 36L16 24L22 30L30 18L40 28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="40" cy="11" r="5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M38.5 11L40 9.5L41.5 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="40" y1="9.5" x2="40" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <h3 class="f-title">Climate Risk Intelligence</h3>
+            <p class="f-sub">Anticipate · Adapt · Resilience</p>
+            <div class="f-rule" aria-hidden="true"></div>
+            <p class="f-desc">Forward-looking climate risk analysis integrating IPCC scenarios, physical and transition risk modelling, and TCFD-aligned reporting to future-proof assets and supply chains.</p>
+            <div class="f-metrics" role="list" aria-label="Focus areas">
+              <span role="listitem" class="f-metric">TCFD Reporting</span>
+              <span role="listitem" class="f-metric">Physical Risk</span>
+              <span role="listitem" class="f-metric">Scenario Analysis</span>
+              <span role="listitem" class="f-metric">Net Zero</span>
+            </div>
+            <div class="f-hint" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3M12 7v10M9 10l3-3 3 3"/>
+              </svg>
+              Hover to see more details
+            </div>
+          </div>
+          <!-- BACK -->
+          <div class="flip-back" aria-label="Climate Risk Intelligence — detailed information">
+            <div class="b-deco"  aria-hidden="true"></div>
+            <div class="b-deco2" aria-hidden="true"></div>
+            <div class="b-grid"  aria-hidden="true"></div>
+            <p class="b-tag">Deep Dive</p>
+            <h3 class="b-title">Climate Risk Intelligence</h3>
+            <div class="b-rule" aria-hidden="true"></div>
+            <ul class="b-list" aria-label="Service details">
+              <li>Physical climate risk mapping using RCP 2.6, 4.5 &amp; 8.5 IPCC scenarios</li>
+              <li>Transition risk assessment covering policy, technology &amp; market pathways</li>
+              <li>TCFD-aligned climate risk disclosures for investors and regulators</li>
+              <li>Climate Vulnerability Assessments (CVA) for infrastructure and assets</li>
+              <li>Net-zero strategy roadmaps with sector-specific decarbonisation plans</li>
+            </ul>
+            <div class="b-stats" aria-label="Service statistics">
+              <div class="b-stat"><div class="b-stat-n">60+</div><div class="b-stat-l">Risk Reports</div></div>
+              <div class="b-stat"><div class="b-stat-n">3</div><div class="b-stat-l">IPCC Scenarios</div></div>
+              <div class="b-stat"><div class="b-stat-n">TCFD</div><div class="b-stat-l">Aligned</div></div>
+            </div>
+            <button class="b-btn" onclick="openService('teal')"
+                    aria-label="Enquire about Climate Risk Intelligence service">
+              Enquire About This Service
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Urban Planning & EIA -->
+      <div class="flip-wrap" data-delay="300"
+           style="--card-accent:var(--e700);--card-light:var(--e200);--card-pale:var(--e50);
+                  --card-bg1:#2a1a0d;--card-bg2:#7a5230">
+        <div class="flip-inner" role="group" aria-label="Urban Planning and EIA service card">
+          <!-- FRONT -->
+          <div class="flip-front" tabindex="0"
+               aria-label="Urban Planning and EIA — hover or tap to flip for more details">
+            <div class="f-bar"    aria-hidden="true"></div>
+            <div class="f-circle" aria-hidden="true"></div>
+            <div class="f-num"    aria-hidden="true">03</div>
+            <div class="f-tag" aria-hidden="true">
+              <span class="f-tag-dot"></span>Planning
+            </div>
+            <div class="f-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" width="26" height="26">
+                <rect x="5" y="28" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="19" y="20" width="10" height="22" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="33" y="24" width="10" height="18" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="3" y1="42" x2="45" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M10 28C10 22 14 16 19 14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3"/>
+                <circle cx="19" cy="12" r="3" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <h3 class="f-title">Urban Planning &amp; EIA</h3>
+            <p class="f-sub">Design · Integrate · Sustain</p>
+            <div class="f-rule" aria-hidden="true"></div>
+            <p class="f-desc">End-to-end Environmental Impact Assessments, green infrastructure strategies, and urban resilience planning that embed ecological value from master plan to final construction.</p>
+            <div class="f-metrics" role="list" aria-label="Focus areas">
+              <span role="listitem" class="f-metric">EIA Studies</span>
+              <span role="listitem" class="f-metric">Green Infrastructure</span>
+              <span role="listitem" class="f-metric">Master Planning</span>
+              <span role="listitem" class="f-metric">Urban Resilience</span>
+            </div>
+            <div class="f-hint" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3M12 7v10M9 10l3-3 3 3"/>
+              </svg>
+              Hover to see more details
+            </div>
+          </div>
+          <!-- BACK -->
+          <div class="flip-back" aria-label="Urban Planning and EIA — detailed information">
+            <div class="b-deco"  aria-hidden="true"></div>
+            <div class="b-deco2" aria-hidden="true"></div>
+            <div class="b-grid"  aria-hidden="true"></div>
+            <p class="b-tag">Deep Dive</p>
+            <h3 class="b-title">Urban Planning &amp; EIA</h3>
+            <div class="b-rule" aria-hidden="true"></div>
+            <ul class="b-list" aria-label="Service details">
+              <li>Statutory Environmental Impact Assessment (EIA) as per MoEFCC guidelines</li>
+              <li>Green building and GRIHA-compliant urban development consultation</li>
+              <li>Ecological sensitivity mapping and biodiversity offset planning</li>
+              <li>Urban heat island mitigation and stormwater management design</li>
+              <li>Regulatory liaison, public hearing support, and environmental clearance</li>
+            </ul>
+            <div class="b-stats" aria-label="Service statistics">
+              <div class="b-stat"><div class="b-stat-n">120+</div><div class="b-stat-l">EIA Reports</div></div>
+              <div class="b-stat"><div class="b-stat-n">8</div><div class="b-stat-l">States</div></div>
+              <div class="b-stat"><div class="b-stat-n">MoEFCC</div><div class="b-stat-l">Approved</div></div>
+            </div>
+            <button class="b-btn" onclick="openService('earth')"
+                    aria-label="Enquire about Urban Planning and EIA service">
+              Enquire About This Service
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <div class="cta" role="complementary" aria-label="Contact EHM Consultancy">
+    <div class="cta-orb1"  aria-hidden="true"></div>
+    <div class="cta-orb2"  aria-hidden="true"></div>
+    <div class="cta-grid"  aria-hidden="true"></div>
+    <div style="position:relative">
+      <p class="cta-eyebrow">Ready to begin?</p>
+      <h2>Schedule a consultation<br/><span>with our environmental experts</span></h2>
+    </div>
+    <div class="cta-actions">
+      <button class="cta-primary" onclick="openContact()"
+              aria-label="Get in touch with EHM Consultancy">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Get in Touch
+      </button>
+      <a href="https://www.ehmconsultancy.co.in" target="_blank" rel="noopener"
+         class="cta-secondary" aria-label="Visit EHM Consultancy website">
+        Visit Website
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M10 2h4m0 0v4m0-4L7 9"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- ════ CONTACT MODAL ════ -->
+<div class="modal-backdrop" id="contact-modal"
+     role="dialog" aria-modal="true" aria-labelledby="cm-h2">
+  <div class="modal">
+    <div class="modal-bar" aria-hidden="true"></div>
+    <button class="modal-close" onclick="closeModal('contact-modal')"
+            aria-label="Close contact dialog">&#x2715;</button>
+    <div class="modal-badge">&#9679; Get in Touch</div>
+    <h2 id="cm-h2">Let's start a conversation</h2>
+    <p class="modal-sub">Reach our team directly — we typically respond within one business day.</p>
+    <div class="modal-rule" aria-hidden="true"></div>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="c-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div>
+          <p class="c-lbl">Email</p>
+          <p class="c-val"><a href="mailto:info@ehmconsultancy.co.in">info@ehmconsultancy.co.in</a></p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="c-lbl">Website</p>
+          <p class="c-val"><a href="https://www.ehmconsultancy.co.in" target="_blank" rel="noopener">ehmconsultancy.co.in</a></p>
+        </div>
+      </div>
+      <div class="contact-item full">
+        <div class="c-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <div>
+          <p class="c-lbl">Registered Office</p>
+          <p class="c-val">53-A Vikas Nagar, Bima Vihar<br/>Kanpur, Uttar Pradesh — 208024, India</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <a href="mailto:info@ehmconsultancy.co.in" class="m-primary" aria-label="Send email to EHM Consultancy">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Email Us
+      </a>
+      <a href="https://www.ehmconsultancy.co.in" target="_blank" rel="noopener"
+         class="m-secondary" aria-label="Visit EHM Consultancy website">
+        Visit Website
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M10 2h4m0 0v4m0-4L7 9"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SERVICE MODAL ════ -->
+<div class="modal-backdrop" id="service-modal"
+     role="dialog" aria-modal="true" aria-labelledby="sm-h2">
+  <div class="modal" id="svc-modal-box">
+    <div class="modal-bar" aria-hidden="true"></div>
+    <button class="modal-close" onclick="closeModal('service-modal')"
+            aria-label="Close service dialog">&#x2715;</button>
+    <div class="modal-badge" id="sm-badge">Service</div>
+    <h2 id="sm-h2"></h2>
+    <p class="modal-sub" id="sm-sub"></p>
+    <div class="modal-rule" aria-hidden="true"></div>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="c-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div>
+          <p class="c-lbl">Enquire via Email</p>
+          <p class="c-val" id="sm-email"></p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="c-lbl">Full Details</p>
+          <p class="c-val"><a href="https://www.ehmconsultancy.co.in/services/" target="_blank" rel="noopener">View on ehmconsultancy.co.in</a></p>
+        </div>
+      </div>
+      <div class="contact-item full">
+        <div class="c-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <div>
+          <p class="c-lbl">EHM Office</p>
+          <p class="c-val">53-A Vikas Nagar, Bima Vihar<br/>Kanpur, Uttar Pradesh — 208024, India</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <a href="#" class="m-primary" id="sm-cta" aria-label="Enquire about this service">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Enquire Now
+      </a>
+      <a href="https://www.ehmconsultancy.co.in/services/" target="_blank" rel="noopener"
+         class="m-secondary">
+        All Services
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9M10 2h4m0 0v4m0-4L7 9"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCRIPTS ════ -->
+<script>
+/* 1. CANVAS — soft nature particles */
+(function(){
+  const cv=document.getElementById('bg-canvas');
+  const cx=cv.getContext('2d');
+  let W,H;
+  const rsz=()=>{W=cv.width=window.innerWidth;H=cv.height=window.innerHeight};
+  rsz(); window.addEventListener('resize',rsz);
+
+  const P=Array.from({length:65},()=>({
+    x:Math.random()*window.innerWidth,
+    y:Math.random()*window.innerHeight,
+    r:Math.random()*2.8+.6,
+    vx:(Math.random()-.5)*.1,
+    vy:-Math.random()*.12-.02,
+    op:Math.random()*.15+.03,
+    hue:108+Math.random()*55,
+    ph:Math.random()*Math.PI*2,
+    amp:Math.random()*.35,
+  }));
+
+  function frame(){
+    cx.clearRect(0,0,W,H);
+    P.forEach(p=>{
+      p.ph+=.008; p.x+=p.vx+Math.sin(p.ph)*p.amp; p.y+=p.vy;
+      if(p.y<-6){p.y=H+6;p.x=Math.random()*W}
+      if(p.x<-6)p.x=W+6; if(p.x>W+6)p.x=-6;
+      cx.beginPath();
+      cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      cx.fillStyle=`hsla(${p.hue},50%,38%,${p.op})`;
+      cx.fill();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* 2. INTERSECTION OBSERVERS */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,d=+(el.dataset.delay||0);
+    setTimeout(()=>el.classList.add('in'),d);
+    io.unobserve(el);
+  });
+},{threshold:.08});
+document.querySelectorAll('.brand-bar,.header-block,.stats-row,.section-rule,.flip-wrap,.cta')
+        .forEach(el=>io.observe(el));
+
+/* 3. ANIMATED COUNTERS */
+const io2=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target; io2.unobserve(el);
+    const end=+el.dataset.count, suf=el.dataset.suffix||'';
+    let cur=0; const step=Math.ceil(end/40);
+    const t=setInterval(()=>{
+      cur=Math.min(cur+step,end);
+      el.textContent=cur+suf;
+      if(cur>=end)clearInterval(t);
+    },34);
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>io2.observe(el));
+
+/* 4. TOUCH FLIP for mobile */
+document.querySelectorAll('.flip-wrap').forEach(wrap=>{
+  wrap.addEventListener('click',e=>{
+    if(e.target.closest('button,.b-btn'))return;
+    if(window.matchMedia('(hover:none)').matches){
+      wrap.classList.toggle('flipped');
+    }
+  });
+  wrap.querySelector('.flip-front').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();wrap.classList.toggle('flipped');}
+  });
+});
+
+/* 5. MODAL DATA & LOGIC */
+const SVC={
+  green:{
+    badge:'Sustainability Assessment',
+    title:'Sustainability Assessment',
+    sub:'Comprehensive environmental evaluations aligned with GRI, BRSR, and ISO 14001 frameworks.',
+    subject:'Enquiry — Sustainability Assessment',
+  },
+  teal:{
+    badge:'Climate Risk Intelligence',
+    title:'Climate Risk Intelligence',
+    sub:'Forward-looking climate risk analysis using IPCC scenarios and TCFD frameworks.',
+    subject:'Enquiry — Climate Risk Intelligence',
+  },
+  earth:{
+    badge:'Urban Planning & EIA',
+    title:'Urban Planning & EIA',
+    sub:'End-to-end Environmental Impact Assessments and green urban resilience planning.',
+    subject:'Enquiry — Urban Planning & EIA',
+  },
+};
+
+function openService(key){
+  const d=SVC[key];
+  document.getElementById('sm-badge').textContent=d.badge;
+  document.getElementById('sm-h2').textContent=d.title;
+  document.getElementById('sm-sub').textContent=d.sub;
+  const ml=`mailto:info@ehmconsultancy.co.in?subject=${encodeURIComponent(d.subject)}`;
+  document.getElementById('sm-cta').href=ml;
+  document.getElementById('sm-email').innerHTML=`<a href="${ml}">info@ehmconsultancy.co.in</a>`;
+  openModal('service-modal');
+}
+function openContact(){openModal('contact-modal')}
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow='';
+}
+document.querySelectorAll('.modal-backdrop').forEach(el=>{
+  el.addEventListener('click',e=>{
+    if(e.target===el)closeModal(el.id);
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-backdrop.open').forEach(el=>closeModal(el.id));
+  }
+});
+</script>
+</body>
+</html>
