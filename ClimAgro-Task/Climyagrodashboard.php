@@ -1,5 +1,4 @@
 <?php
-
 $json_file = __DIR__ . '/stats.json';
 
 if (!file_exists($json_file)) {
@@ -7,7 +6,6 @@ if (!file_exists($json_file)) {
         ERROR: stats.json not found at ' . htmlspecialchars($json_file) . '
     </p>');
 }
-
 $raw  = file_get_contents($json_file);
 $data = json_decode($raw, true);
 
@@ -22,7 +20,6 @@ $tagline = htmlspecialchars($data['tagline'] ?? '');
 $updated = htmlspecialchars($data['last_updated'] ?? date('Y-m-d'));
 $metrics = $data['metrics'] ?? [];
 
-/* ── SVG icons keyed by id ──────────────────────────────── */
 function get_icon(string $key): string {
     $icons = [
         'map'     => '<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>',
@@ -34,8 +31,6 @@ function get_icon(string $key): string {
     ];
     return $icons[$key] ?? $icons['chart'];
 }
-
-/* ── Format large numbers ───────────────────────────────── */
 function fmt(float $v, string $unit): string {
     if ($v >= 1_000_000)      $n = number_format($v / 1_000_000, 2) . 'M';
     elseif ($v >= 1_000)      $n = number_format($v);
@@ -43,8 +38,6 @@ function fmt(float $v, string $unit): string {
     else                      $n = number_format((int)$v);
     return $n . ($unit ? '<span class="unit">' . htmlspecialchars($unit) . '</span>' : '');
 }
-
-/* ── Sanitise hex colour ────────────────────────────────── */
 function safe_color(string $c): string {
     return preg_match('/^#[0-9a-fA-F]{3,6}$/', $c) ? $c : '#2dd4bf';
 }
@@ -60,17 +53,9 @@ function safe_color(string $c): string {
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 
 <style>
-/* ══ RESET ═══════════════════════════════════════════════ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* ══ CLIMAGRO BRAND PALETTE ══════════════════════════════
-   Extracted directly from climagroanalytics.com:
-   ─ Deep forest green  #0a3d2e  (primary bg)
-   ─ Rich green         #0f5c3a  (surface)
-   ─ Teal accent        #2dd4bf  (primary accent)
-   ─ Lime green         #4ade80  (secondary accent)
-   ─ White              #f0fdf4  (text)
-   ═══════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+   
 :root{
   --bg:          #071f17;
   --bg2:         #0a2e1e;
@@ -82,8 +67,8 @@ function safe_color(string $c): string {
   --text2:       #a7f3d0;
   --text3:       #6ee7b7;
   --muted:       #4ade80;
-  --accent:      #2dd4bf;   /* teal */
-  --accent2:     #4ade80;   /* lime */
+  --accent:      #2dd4bf;   /* teal 
+  --accent2:     #4ade80;   
   --glow:        rgba(45,212,191,0.18);
   --glow2:       rgba(74,222,128,0.12);
   --radius:      20px;
@@ -103,7 +88,6 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ══ ANIMATED BACKGROUND ══════════════════════════════════ */
 body::before{
   content:'';
   position:fixed;inset:0;
@@ -120,7 +104,6 @@ body::before{
   to{opacity:1}
 }
 
-/* Floating orbs */
 .orb{
   position:fixed;border-radius:50%;
   filter:blur(80px);pointer-events:none;z-index:0;
@@ -133,8 +116,6 @@ body::before{
   0%,100%{transform:translateY(0) scale(1)}
   50%{transform:translateY(-30px) scale(1.05)}
 }
-
-/* ══ MOVING GRID LINES ════════════════════════════════════ */
 .grid-overlay{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:
@@ -148,10 +129,8 @@ body::before{
   to{background-position:60px 60px}
 }
 
-/* ══ LAYOUT WRAPPER ═══════════════════════════════════════ */
 .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px 60px}
 
-/* ══ HEADER ═══════════════════════════════════════════════ */
 header{
   padding:48px 0 40px;
   display:flex;align-items:flex-end;justify-content:space-between;
@@ -205,7 +184,6 @@ header::after{
 }
 .updated{font-size:0.7rem;color:var(--text3);font-family:var(--mono);margin-top:8px}
 
-/* ══ SECTION LABEL ════════════════════════════════════════ */
 .section-label{
   display:flex;align-items:center;gap:12px;
   font-family:var(--mono);font-size:0.68rem;text-transform:uppercase;
@@ -214,14 +192,11 @@ header::after{
 }
 .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ══ METRICS GRID ═════════════════════════════════════════ */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
   gap:20px;
 }
-
-/* ══ METRIC CARD ══════════════════════════════════════════ */
 .card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -237,25 +212,20 @@ header::after{
   border-color:var(--border2);
   box-shadow:0 20px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(45,212,191,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
 }
-
-/* Stagger */
 <?php for($i=0;$i<12;$i++): ?>
 .card:nth-child(<?= $i+1 ?>){animation-delay:<?= $i*0.07 ?>s}
 <?php endfor; ?>
-
 @keyframes cardIn{
   from{opacity:0;transform:translateY(20px)}
   to{opacity:1;transform:translateY(0)}
 }
 
-/* Coloured top bar */
 .card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--c),transparent);
   opacity:0.9;
 }
 
-/* Corner glow */
 .card::after{
   content:'';position:absolute;
   top:-40px;right:-40px;
@@ -266,7 +236,7 @@ header::after{
 }
 .card:hover::after{opacity:0.13}
 
-/* Shine sweep on hover */
+
 .card-shine{
   position:absolute;inset:0;
   background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.04) 50%,transparent 70%);
@@ -310,7 +280,6 @@ header::after{
 .trend-up{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
 .trend-dn{background:rgba(251,146,60,0.1);color:#fb923c;border:1px solid rgba(251,146,60,0.2)}
 
-/* Animated counter underline */
 .card-value-wrap{position:relative;display:inline-block}
 .card-value-wrap::after{
   content:'';position:absolute;bottom:-4px;left:0;
@@ -320,8 +289,6 @@ header::after{
   transition:width 0.6s ease 0.2s;
 }
 .card:hover .card-value-wrap::after{width:100%}
-
-/* ══ PARTICLE DOTS (CSS only) ════════════════════════════ */
 .particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .particle{
   position:absolute;border-radius:50%;
@@ -346,13 +313,12 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   100%{transform:translateY(-100vh) rotate(360deg);opacity:0}
 }
 
-/* ══ SITE FOOTER ══════════════════════════════════════════ */
 .site-footer{
   margin-top:72px;
   background:#0a3326;
   border-top:1px solid rgba(45,212,191,0.18);
   position:relative;z-index:1;
-  /* pull full width past .wrap padding */
+  
   margin-left:-28px;margin-right:-28px;
   padding:52px 28px 0;
 }
@@ -361,7 +327,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);
 }
 
-/* 3-column grid */
 .footer-grid{
   max-width:1240px;margin:0 auto;
   display:grid;grid-template-columns:1fr 1fr 1fr;
@@ -377,7 +342,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   margin-bottom:18px;letter-spacing:-0.01em;
 }
 
-/* Quick Links */
 .footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
 .footer-links a{
   color:var(--text2);font-size:0.88rem;text-decoration:none;
@@ -385,7 +349,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 }
 .footer-links a:hover{color:var(--accent);padding-left:6px}
 
-/* Contact items */
 .contact-list{display:flex;flex-direction:column;gap:13px}
 .contact-item{display:flex;align-items:flex-start;gap:11px;color:var(--text2);font-size:0.88rem;line-height:1.5}
 .contact-item svg{
@@ -394,7 +357,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   flex-shrink:0;margin-top:2px;
 }
 
-/* Subscribe */
 .sub-form{
   display:flex;align-items:center;
   background:rgba(255,255,255,0.07);
@@ -421,7 +383,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 .sub-btn:hover{background:var(--accent);transform:scale(1.08)}
 .sub-btn svg{width:16px;height:16px;stroke:#0a3326;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* Bottom bar */
 .footer-bottom{
   max-width:1240px;margin:0 auto;
   border-top:1px solid rgba(45,212,191,0.1);
@@ -431,7 +392,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 }
 .footer-copy{font-size:0.78rem;color:var(--text3);font-family:var(--mono);line-height:1.6}
 
-/* Social icons */
 .social-row{display:flex;align-items:center;gap:18px}
 .social-link{
   color:var(--text3);transition:color 0.18s,transform 0.18s;display:inline-flex;
@@ -439,7 +399,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 .social-link:hover{color:var(--accent);transform:translateY(-2px)}
 .social-link svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* Scroll-to-top */
 .scroll-top{
   width:40px;height:40px;border-radius:8px;
   background:var(--accent2);border:none;cursor:pointer;
@@ -450,7 +409,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 .scroll-top:hover{background:var(--accent);transform:translateY(-3px)}
 .scroll-top svg{width:16px;height:16px;stroke:#0a3326;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* ══ RESPONSIVE ═══════════════════════════════════════════ */
 @media(max-width:640px){
   .wrap{padding:0 16px 40px}
   header{padding:32px 0 28px}
@@ -460,7 +418,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 </head>
 <body>
 
-<!-- Background layers -->
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
@@ -471,7 +428,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 
 <div class="wrap">
 
-  <!-- ── HEADER ──────────────────────────────────────────── -->
   <header>
     <div class="brand">
       <div class="brand-icon">🌱</div>
@@ -491,7 +447,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
     </div>
   </header>
 
-  <!-- ── METRICS ─────────────────────────────────────────── -->
   <div class="section-label">
     Key Performance Indicators &mdash; <?= $metric_count ?> metrics loaded from stats.json
   </div>
@@ -535,13 +490,10 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   </div>
 
 
-</div><!-- /wrap -->
-
-<!-- ── SITE FOOTER (matches climagroanalytics.com) ───────── -->
+</div>
 <footer class="site-footer">
   <div class="footer-grid">
 
-    <!-- Col 1: Quick Links -->
     <div class="footer-col">
       <h4>Quick Links</h4>
       <ul class="footer-links">
@@ -552,7 +504,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
       </ul>
     </div>
 
-    <!-- Col 2: Contact -->
     <div class="footer-col">
       <h4>Contact</h4>
       <div class="contact-list">
@@ -571,7 +522,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
       </div>
     </div>
 
-    <!-- Col 3: Subscribe -->
     <div class="footer-col">
       <h4>Subscribe</h4>
       <div class="sub-form">
@@ -582,35 +532,33 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
       </div>
     </div>
 
-  </div><!-- /footer-grid -->
-
-  <!-- Bottom bar -->
+  </div>
   <div class="footer-bottom">
     <div class="footer-copy">
       &copy; <?= date('Y') ?> ClimAgro Analytics All rights reserved<br>
       Startup India Certificate Number &ndash; DIPP129220
     </div>
 
-    <!-- Social icons -->
+  
     <div class="social-row">
-      <!-- Facebook -->
+      
       <a href="https://www.facebook.com" class="social-link" target="_blank" rel="noopener" aria-label="Facebook">
         <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
       </a>
-      <!-- LinkedIn -->
+     
       <a href="https://www.linkedin.com/company/climagroanalytics" class="social-link" target="_blank" rel="noopener" aria-label="LinkedIn">
         <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
       </a>
-      <!-- Twitter / X -->
+      
       <a href="https://twitter.com" class="social-link" target="_blank" rel="noopener" aria-label="Twitter">
         <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
       </a>
-      <!-- Instagram -->
+     
       <a href="https://www.instagram.com" class="social-link" target="_blank" rel="noopener" aria-label="Instagram">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
 
-      <!-- Scroll to top -->
+     
       <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
         <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
       </button>
