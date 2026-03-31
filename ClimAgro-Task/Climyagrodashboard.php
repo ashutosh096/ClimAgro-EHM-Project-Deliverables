@@ -1,16 +1,4 @@
 <?php
-/**
- * ClimAgro Data Dashboard
- * ─────────────────────────────────────────────────────────────
- * HOW IT WORKS:
- *   1. PHP reads stats.json on every page load
- *   2. Parses the JSON and injects data into HTML cards
- *   3. To update ANY metric → edit stats.json only
- *      The HTML/PHP never needs to change.
- * ─────────────────────────────────────────────────────────────
- * TECH STACK: PHP · JSON · HTML · CSS · SVG animations
- * RUN:  php -S localhost:8080   then open localhost:8080/dashboard.php
- */
 
 $json_file = __DIR__ . '/stats.json';
 
@@ -29,11 +17,10 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     </p>');
 }
 
-$title       = htmlspecialchars($data['dashboard_title'] ?? 'ClimAgro Dashboard');
-$tagline     = htmlspecialchars($data['tagline']         ?? '');
-$updated     = htmlspecialchars($data['last_updated']    ?? date('Y-m-d'));
-$metrics     = $data['metrics'] ?? [];
-$metric_count = count($metrics);
+$title = htmlspecialchars($data['dashboard_title'] ?? 'ClimAgro Dashboard');
+$tagline = htmlspecialchars($data['tagline'] ?? '');
+$updated = htmlspecialchars($data['last_updated'] ?? date('Y-m-d'));
+$metrics = $data['metrics'] ?? [];
 
 /* ── SVG icons keyed by id ──────────────────────────────── */
 function get_icon(string $key): string {
