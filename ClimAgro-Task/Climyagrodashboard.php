@@ -1,16 +1,4 @@
 <?php
-/**
- * ClimAgro Data Dashboard
- * ─────────────────────────────────────────────────────────────
- * HOW IT WORKS:
- *   1. PHP reads stats.json on every page load
- *   2. Parses the JSON and injects data into HTML cards
- *   3. To update ANY metric → edit stats.json only
- *      The HTML/PHP never needs to change.
- * ─────────────────────────────────────────────────────────────
- * TECH STACK: PHP · JSON · HTML · CSS · SVG animations
- * RUN:  php -S localhost:8080   then open localhost:8080/dashboard.php
- */
 
 $json_file = __DIR__ . '/stats.json';
 
@@ -35,7 +23,6 @@ $updated     = htmlspecialchars($data['last_updated']    ?? date('Y-m-d'));
 $metrics     = $data['metrics'] ?? [];
 $metric_count = count($metrics);
 
-/* ── SVG icons keyed by id ──────────────────────────────── */
 function get_icon(string $key): string {
     $icons = [
         'map'     => '<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>',
@@ -47,8 +34,6 @@ function get_icon(string $key): string {
     ];
     return $icons[$key] ?? $icons['chart'];
 }
-
-/* ── Format large numbers ───────────────────────────────── */
 function fmt(float $v, string $unit): string {
     if ($v >= 1_000_000)      $n = number_format($v / 1_000_000, 2) . 'M';
     elseif ($v >= 1_000)      $n = number_format($v);
@@ -56,8 +41,6 @@ function fmt(float $v, string $unit): string {
     else                      $n = number_format((int)$v);
     return $n . ($unit ? '<span class="unit">' . htmlspecialchars($unit) . '</span>' : '');
 }
-
-/* ── Sanitise hex colour ────────────────────────────────── */
 function safe_color(string $c): string {
     return preg_match('/^#[0-9a-fA-F]{3,6}$/', $c) ? $c : '#2dd4bf';
 }
@@ -73,17 +56,9 @@ function safe_color(string $c): string {
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 
 <style>
-/* ══ RESET ═══════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* ══ CLIMAGRO BRAND PALETTE ══════════════════════════════
-   Extracted directly from climagroanalytics.com:
-   ─ Deep forest green  #0a3d2e  (primary bg)
-   ─ Rich green         #0f5c3a  (surface)
-   ─ Teal accent        #2dd4bf  (primary accent)
-   ─ Lime green         #4ade80  (secondary accent)
-   ─ White              #f0fdf4  (text)
-   ═══════════════════════════════════════════════════════ */
+
 :root{
   --bg:          #071f17;
   --bg2:         #0a2e1e;
@@ -116,7 +91,6 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ══ ANIMATED BACKGROUND ══════════════════════════════════ */
 body::before{
   content:'';
   position:fixed;inset:0;
@@ -133,7 +107,6 @@ body::before{
   to{opacity:1}
 }
 
-/* Floating orbs */
 .orb{
   position:fixed;border-radius:50%;
   filter:blur(80px);pointer-events:none;z-index:0;
@@ -147,7 +120,6 @@ body::before{
   50%{transform:translateY(-30px) scale(1.05)}
 }
 
-/* ══ MOVING GRID LINES ════════════════════════════════════ */
 .grid-overlay{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:
@@ -161,10 +133,8 @@ body::before{
   to{background-position:60px 60px}
 }
 
-/* ══ LAYOUT WRAPPER ═══════════════════════════════════════ */
 .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px 60px}
-
-/* ══ HEADER ═══════════════════════════════════════════════ */
+    
 header{
   padding:48px 0 40px;
   display:flex;align-items:flex-end;justify-content:space-between;
@@ -218,7 +188,6 @@ header::after{
 }
 .updated{font-size:0.7rem;color:var(--text3);font-family:var(--mono);margin-top:8px}
 
-/* ══ SECTION LABEL ════════════════════════════════════════ */
 .section-label{
   display:flex;align-items:center;gap:12px;
   font-family:var(--mono);font-size:0.68rem;text-transform:uppercase;
@@ -227,14 +196,12 @@ header::after{
 }
 .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ══ METRICS GRID ═════════════════════════════════════════ */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
   gap:20px;
 }
 
-/* ══ METRIC CARD ══════════════════════════════════════════ */
 .card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -251,7 +218,6 @@ header::after{
   box-shadow:0 20px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(45,212,191,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
-/* Stagger */
 <?php for($i=0;$i<12;$i++): ?>
 .card:nth-child(<?= $i+1 ?>){animation-delay:<?= $i*0.07 ?>s}
 <?php endfor; ?>
@@ -261,14 +227,12 @@ header::after{
   to{opacity:1;transform:translateY(0)}
 }
 
-/* Coloured top bar */
 .card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--c),transparent);
   opacity:0.9;
 }
 
-/* Corner glow */
 .card::after{
   content:'';position:absolute;
   top:-40px;right:-40px;
@@ -279,7 +243,7 @@ header::after{
 }
 .card:hover::after{opacity:0.13}
 
-/* Shine sweep on hover */
+
 .card-shine{
   position:absolute;inset:0;
   background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.04) 50%,transparent 70%);
@@ -323,7 +287,6 @@ header::after{
 .trend-up{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
 .trend-dn{background:rgba(251,146,60,0.1);color:#fb923c;border:1px solid rgba(251,146,60,0.2)}
 
-/* Animated counter underline */
 .card-value-wrap{position:relative;display:inline-block}
 .card-value-wrap::after{
   content:'';position:absolute;bottom:-4px;left:0;
@@ -334,7 +297,6 @@ header::after{
 }
 .card:hover .card-value-wrap::after{width:100%}
 
-/* ══ PARTICLE DOTS (CSS only) ════════════════════════════ */
 .particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .particle{
   position:absolute;border-radius:50%;
@@ -359,13 +321,12 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   100%{transform:translateY(-100vh) rotate(360deg);opacity:0}
 }
 
-/* ══ SITE FOOTER ══════════════════════════════════════════ */
 .site-footer{
   margin-top:72px;
   background:#0a3326;
   border-top:1px solid rgba(45,212,191,0.18);
   position:relative;z-index:1;
-  /* pull full width past .wrap padding */
+  
   margin-left:-28px;margin-right:-28px;
   padding:52px 28px 0;
 }
@@ -374,7 +335,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);
 }
 
-/* 3-column grid */
 .footer-grid{
   max-width:1240px;margin:0 auto;
   display:grid;grid-template-columns:1fr 1fr 1fr;
@@ -390,7 +350,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   margin-bottom:18px;letter-spacing:-0.01em;
 }
 
-/* Quick Links */
 .footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
 .footer-links a{
   color:var(--text2);font-size:0.88rem;text-decoration:none;
@@ -398,7 +357,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 }
 .footer-links a:hover{color:var(--accent);padding-left:6px}
 
-/* Contact items */
 .contact-list{display:flex;flex-direction:column;gap:13px}
 .contact-item{display:flex;align-items:flex-start;gap:11px;color:var(--text2);font-size:0.88rem;line-height:1.5}
 .contact-item svg{
@@ -407,7 +365,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
   flex-shrink:0;margin-top:2px;
 }
 
-/* Subscribe */
 .sub-form{
   display:flex;align-items:center;
   background:rgba(255,255,255,0.07);
@@ -434,7 +391,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 .sub-btn:hover{background:var(--accent);transform:scale(1.08)}
 .sub-btn svg{width:16px;height:16px;stroke:#0a3326;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* Bottom bar */
 .footer-bottom{
   max-width:1240px;margin:0 auto;
   border-top:1px solid rgba(45,212,191,0.1);
@@ -444,7 +400,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 }
 .footer-copy{font-size:0.78rem;color:var(--text3);font-family:var(--mono);line-height:1.6}
 
-/* Social icons */
 .social-row{display:flex;align-items:center;gap:18px}
 .social-link{
   color:var(--text3);transition:color 0.18s,transform 0.18s;display:inline-flex;
@@ -452,7 +407,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 .social-link:hover{color:var(--accent);transform:translateY(-2px)}
 .social-link svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* Scroll-to-top */
 .scroll-top{
   width:40px;height:40px;border-radius:8px;
   background:var(--accent2);border:none;cursor:pointer;
@@ -463,7 +417,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 .scroll-top:hover{background:var(--accent);transform:translateY(-3px)}
 .scroll-top svg{width:16px;height:16px;stroke:#0a3326;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* ══ RESPONSIVE ═══════════════════════════════════════════ */
 @media(max-width:640px){
   .wrap{padding:0 16px 40px}
   header{padding:32px 0 28px}
@@ -473,7 +426,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 </head>
 <body>
 
-<!-- Background layers -->
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
@@ -484,7 +436,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 
 <div class="wrap">
 
-  <!-- ── HEADER ──────────────────────────────────────────── -->
   <header>
     <div class="brand">
       <div class="brand-icon">🌱</div>
@@ -504,7 +455,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
     </div>
   </header>
 
-  <!-- ── METRICS ─────────────────────────────────────────── -->
   <div class="section-label">
     Key Performance Indicators &mdash; <?= $metric_count ?> metrics loaded from stats.json
   </div>
@@ -550,7 +500,6 @@ foreach($ps as $i=>[$s,$l,$d,$dl]):
 
 </div><!-- /wrap -->
 
-<!-- ── SITE FOOTER (matches climagroanalytics.com) ───────── -->
 <footer class="site-footer">
   <div class="footer-grid">
 
