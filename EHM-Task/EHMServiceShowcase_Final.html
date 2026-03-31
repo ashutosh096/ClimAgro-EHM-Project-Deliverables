@@ -8,14 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ════════════════════════════════════════
-   RESET & ROOT TOKENS
-════════════════════════════════════════ */
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 
 :root{
-  /* EHM Brand Greens */
   --g900:#08251a; --g800:#1a5c38; --g700:#236b44;
   --g600:#2d8055; --g500:#3a9466; --g400:#4aab74;
   --g300:#7ec99e; --g200:#b6dfc9; --g100:#d8f0e4; --g50:#eef8f3;
@@ -32,10 +29,6 @@ html{scroll-behavior:smooth}
   --sh-lg:0 12px 48px rgba(26,92,56,.14),0 4px 16px rgba(26,92,56,.07);
   --sh-xl:0 24px 64px rgba(26,92,56,.18),0 8px 24px rgba(26,92,56,.09);
 }
-
-/* ════════════════════════════════════════
-   BODY — GREEN GRADIENT FROM FILE _4
-════════════════════════════════════════ */
 body{
   background:linear-gradient(160deg,#dff4f0 0%,#e8f7f4 30%,#eef9f6 55%,#e4f4ef 80%,#d8f0eb 100%);
   color:var(--ink);
@@ -44,32 +37,21 @@ body{
   min-height:100vh;
   position:relative;
 }
-
-/* ════════════════════════════════════════
-   BACKGROUND LAYERS
-════════════════════════════════════════ */
-/* Layer 1 — illustrated SVG scene (fixed) */
 #bg-scene{
   position:fixed;inset:0;width:100%;height:100%;
   pointer-events:none;z-index:0;
   overflow:hidden;
 }
-/* Layer 2 — animated canvas particles */
 #bg-canvas{
   position:fixed;inset:0;width:100%;height:100%;
   pointer-events:none;z-index:1;opacity:.6;
 }
-/* Layer 3 — light scrim — green tones from file _4 */
 #bg-scrim{
   position:fixed;inset:0;pointer-events:none;z-index:2;
   background:
     radial-gradient(ellipse 70% 50% at 50% 0%,rgba(224,246,242,.90) 0%,rgba(224,246,242,.68) 60%,transparent 100%),
     linear-gradient(180deg,rgba(224,246,242,.80) 0%,rgba(224,246,242,.50) 40%,rgba(224,246,242,.72) 100%);
 }
-
-/* ════════════════════════════════════════
-   SKIP LINK
-════════════════════════════════════════ */
 .skip{
   position:absolute;top:-56px;left:16px;
   background:var(--g800);color:#fff;
@@ -78,10 +60,6 @@ body{
   text-decoration:none;z-index:9999;transition:top .2s;
 }
 .skip:focus{top:14px}
-
-/* ════════════════════════════════════════
-   PAGE LAYOUT
-════════════════════════════════════════ */
 .page{
   position:relative;z-index:3;
   max-width:1320px;margin:0 auto;
@@ -89,10 +67,6 @@ body{
 }
 @media(max-width:900px){.page{padding:56px 28px 72px}}
 @media(max-width:560px){.page{padding:40px 18px 60px}}
-
-/* ════════════════════════════════════════
-   BRAND BAR — file _2 layout + file _4 info panel
-════════════════════════════════════════ */
 .brand-bar{
   display:flex;align-items:center;gap:12px;
   justify-content:space-between;
@@ -114,8 +88,6 @@ body{
 }
 .brand-sep{width:1px;height:18px;background:var(--s300);margin:0 4px}
 .brand-tagline{font-size:12px;color:var(--s500);font-weight:400}
-
-/* ── Top-right info panel (from file _4) ── */
 .info-panel{
   display:flex;align-items:stretch;gap:0;
   border:1px solid rgba(26,92,56,.12);
@@ -149,9 +121,6 @@ body{
 .info-cell-value a{color:var(--g800);text-decoration:none}
 .info-cell-value a:hover{text-decoration:underline}
 
-/* ════════════════════════════════════════
-   SECTION HEADER
-════════════════════════════════════════ */
 .section-badge{
   display:inline-flex;align-items:center;gap:8px;
   background:var(--g50);border:1px solid var(--g200);
@@ -174,7 +143,6 @@ body{
 
 .header-block{opacity:0;transform:translateY(20px)}
 .header-block.in{animation:fadeUp .85s .1s cubic-bezier(.16,1,.3,1) forwards}
-
 h1{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(36px,4.8vw,62px);
@@ -198,10 +166,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   max-width:480px;line-height:1.74;font-weight:400;
   margin-bottom:36px;
 }
-
-/* ════════════════════════════════════════
-   STATS ROW
-════════════════════════════════════════ */
 .stats-row{
   display:flex;align-items:center;width:fit-content;
   border:1px solid var(--s100);border-radius:16px;
@@ -222,10 +186,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   font-family:'JetBrains Mono',monospace;font-size:9px;
   color:var(--s500);letter-spacing:.18em;text-transform:uppercase;margin-top:4px;
 }
-
-/* ════════════════════════════════════════
-   SECTION RULE
-════════════════════════════════════════ */
 .section-rule{
   height:1px;width:0;
   background:linear-gradient(90deg,var(--g600),var(--g200) 40%,transparent 80%);
@@ -233,18 +193,12 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   transition:width 1s .42s cubic-bezier(.16,1,.3,1);
 }
 .section-rule.in{width:100%}
-
-/* ════════════════════════════════════════
-   FLIP CARD GRID
-════════════════════════════════════════ */
 .grid{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:24px;margin-bottom:60px;
 }
 @media(max-width:1040px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px) {.grid{grid-template-columns:1fr}}
-
-/* ── Flip wrapper ── */
 .flip-wrap{
   perspective:1200px;
   height:520px;
@@ -253,28 +207,21 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 }
 .flip-wrap.in{opacity:1;transform:translateY(0)}
 
-/* ── Inner — the rotating piece ── */
 .flip-inner{
   position:relative;width:100%;height:100%;
   transform-style:preserve-3d;
   transition:transform .75s cubic-bezier(.5,0,.2,1);
   cursor:pointer;
 }
-/* Auto-flip on hover for desktop */
 @media(hover:hover){
   .flip-wrap:hover .flip-inner{transform:rotateY(180deg)}
 }
-/* JS-toggled flip for touch */
 .flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
-
-/* ── Front & Back shared ── */
 .flip-front,.flip-back{
   position:absolute;inset:0;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   border-radius:20px;overflow:hidden;
 }
-
-/* ── FRONT FACE ── */
 .flip-front{
   background:var(--white);
   border:1px solid var(--s100);
@@ -287,8 +234,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   border-color:var(--card-light);
   box-shadow:var(--sh-xl),0 0 0 1px var(--card-light);
 }
-
-/* Front top bar */
 .f-bar{
   position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--card-accent),var(--card-light));
@@ -296,8 +241,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   transition:transform .5s cubic-bezier(.16,1,.3,1);
 }
 .flip-wrap:hover .f-bar,.flip-wrap.flipped .f-bar{transform:scaleX(1)}
-
-/* Front bg circle */
 .f-circle{
   position:absolute;top:-40px;right:-40px;
   width:160px;height:160px;border-radius:50%;
@@ -313,7 +256,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   transition:color .4s;
 }
 .flip-wrap:hover .f-num,.flip-wrap.flipped .f-num{color:var(--card-pale)}
-
 .f-tag{
   display:inline-flex;align-items:center;gap:6px;
   background:var(--card-pale);color:var(--card-accent);
@@ -323,7 +265,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   padding:5px 12px;border-radius:100px;margin-bottom:26px;width:fit-content;
 }
 .f-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--card-accent)}
-
 .f-icon{
   display:inline-flex;align-items:center;justify-content:center;
   width:54px;height:54px;border-radius:14px;
@@ -336,7 +277,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   transform:scale(1.1) rotate(-4deg);
   box-shadow:0 8px 22px rgba(0,0,0,.18);
 }
-
 .f-title{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(20px,2.3vw,24px);font-weight:700;
@@ -377,8 +317,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 }
 .f-hint svg{transition:transform .3s}
 .flip-wrap:hover .f-hint svg{transform:rotateY(180deg) scale(1.15)}
-
-/* ── BACK FACE ── */
 .flip-back{
   transform:rotateY(180deg);
   background:linear-gradient(150deg,var(--card-bg1) 0%,var(--card-bg2) 100%);
@@ -387,8 +325,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   display:flex;flex-direction:column;
   box-shadow:var(--sh-lg);
 }
-
-/* Back face decoration */
 .b-deco{
   position:absolute;bottom:-40px;right:-40px;
   width:200px;height:200px;border-radius:50%;
@@ -421,8 +357,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   color:#fff;margin-bottom:12px;line-height:1.2;letter-spacing:-.2px;
 }
 .b-rule{height:1.5px;width:40px;background:rgba(255,255,255,.35);margin-bottom:18px}
-
-/* Back details list */
 .b-list{
   list-style:none;display:flex;flex-direction:column;gap:11px;
   margin-bottom:20px;flex:1;
@@ -436,8 +370,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   width:6px;height:6px;border-radius:50%;
   background:rgba(255,255,255,.6);margin-top:6px;
 }
-
-/* Back stats strip */
 .b-stats{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:1px;background:rgba(255,255,255,.15);
@@ -456,8 +388,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   color:rgba(255,255,255,.5);letter-spacing:.14em;
   text-transform:uppercase;margin-top:3px;
 }
-
-/* Back CTA */
 .b-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:9px;
   background:rgba(255,255,255,.18);
@@ -470,9 +400,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 .b-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.6);transform:translateY(-2px)}
 .b-btn:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:3px}
 
-/* ════════════════════════════════════════
-   CTA STRIP
-════════════════════════════════════════ */
 .cta{
   position:relative;overflow:hidden;border-radius:20px;padding:48px 52px;
   background:linear-gradient(135deg,var(--g900) 0%,var(--g800) 55%,var(--g700) 100%);
@@ -521,9 +448,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 .cta-secondary:hover{color:#fff;border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.08)}
 .cta-secondary:focus-visible{outline:2px solid rgba(255,255,255,.5);outline-offset:3px}
 
-/* ════════════════════════════════════════
-   MODALS
-════════════════════════════════════════ */
 .modal-backdrop{
   position:fixed;inset:0;z-index:1000;
   background:rgba(8,22,14,.5);
@@ -612,9 +536,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 .m-secondary:hover{border-color:var(--g200);color:var(--g800);background:var(--g50)}
 .m-secondary:focus-visible{outline:2px solid var(--g800);outline-offset:3px}
 
-/* ════════════════════════════════════════
-   KEYFRAMES
-════════════════════════════════════════ */
 @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp  {from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)}}
 @keyframes floatLeaf{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(4deg)}}
@@ -623,9 +544,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 @keyframes ripple{0%{r:30;opacity:.5}100%{r:90;opacity:0}}
 @keyframes drift{0%{transform:translate(0,0)}25%{transform:translate(8px,-12px)}50%{transform:translate(16px,-6px)}75%{transform:translate(4px,-18px)}100%{transform:translate(0,0)}}
 
-/* ════════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════════ */
 @media(max-width:640px){
   .stats-row{width:100%}
   .stat-item{padding:14px 18px;flex:1}
@@ -645,7 +563,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 
 <a href="#services" class="skip">Skip to services</a>
 
-<!-- ════ BACKGROUND: SVG ILLUSTRATED SCENE (from file _4) ════ -->
 <div id="bg-scene" aria-hidden="true">
 <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
      xmlns="http://www.w3.org/2000/svg">
@@ -676,37 +593,23 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
       <stop offset="100%" stop-color="#6a4820"/>
     </linearGradient>
   </defs>
-
-  <!-- Sky -->
   <rect width="1440" height="900" fill="url(#skyGrad)"/>
-
-  <!-- Sun halo -->
   <circle cx="1280" cy="120" r="180" fill="rgba(255,240,200,.28)"/>
   <circle cx="1280" cy="120" r="120" fill="rgba(255,232,160,.22)"/>
   <circle cx="1280" cy="120" r="70"  fill="rgba(255,220,120,.18)"/>
-
-  <!-- Far hills -->
   <ellipse cx="200"  cy="720" rx="420" ry="180" fill="#d4eddf" opacity=".7"/>
   <ellipse cx="700"  cy="740" rx="500" ry="160" fill="#c8e8d4" opacity=".6"/>
   <ellipse cx="1300" cy="730" rx="440" ry="170" fill="#d0ead8" opacity=".65"/>
-
-  <!-- Mid hills -->
   <path d="M0,760 Q200,620 480,680 Q700,730 900,660 Q1100,590 1300,660 Q1400,700 1440,680 L1440,900 L0,900 Z"
         fill="url(#hillGrad2)" opacity=".75"/>
   <path d="M0,810 Q240,700 500,740 Q720,770 960,720 Q1160,680 1440,740 L1440,900 L0,900 Z"
         fill="url(#hillGrad1)" opacity=".8"/>
-
-  <!-- River / water body -->
   <ellipse cx="720" cy="850" rx="360" ry="40" fill="url(#waterGrad)" opacity=".55"/>
   <ellipse cx="720" cy="852" rx="300" ry="28" fill="#b8dcf0" opacity=".35"/>
   <ellipse cx="660" cy="852" rx="55" ry="8"  fill="none" stroke="#8ec8e8" stroke-width="1" opacity=".5"/>
   <ellipse cx="780" cy="855" rx="40" ry="6"  fill="none" stroke="#8ec8e8" stroke-width="1" opacity=".4"/>
   <ellipse cx="720" cy="848" rx="70" ry="10" fill="none" stroke="#8ec8e8" stroke-width="1" opacity=".45"/>
-
-  <!-- Ground -->
   <rect x="0" y="860" width="1440" height="40" fill="url(#groundGrad)" opacity=".7"/>
-
-  <!-- Trees Left Cluster -->
   <g style="animation:floatLeaf 8s ease-in-out infinite">
     <rect x="88" y="650" width="14" height="120" fill="url(#trunkGrad)" rx="3"/>
     <ellipse cx="95"  cy="630" rx="48" ry="58" fill="#1a5c38" opacity=".85"/>
@@ -724,8 +627,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     <ellipse cx="52"  cy="688" rx="30" ry="38" fill="#236b44" opacity=".78"/>
     <ellipse cx="52"  cy="678" rx="22" ry="28" fill="#3a9466" opacity=".72"/>
   </g>
-
-  <!-- Trees Right Cluster -->
   <g style="animation:floatLeaf2 9s ease-in-out infinite .5s">
     <rect x="1310" y="640" width="14" height="130" fill="url(#trunkGrad)" rx="3"/>
     <ellipse cx="1317" cy="618" rx="52" ry="62" fill="#1a5c38" opacity=".85"/>
@@ -743,7 +644,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     <ellipse cx="1399" cy="678" rx="28" ry="36" fill="#236b44" opacity=".76"/>
   </g>
 
-  <!-- Centre Trees -->
   <g style="animation:sway 14s ease-in-out infinite 2s">
     <rect x="618" y="720" width="8" height="60" fill="url(#trunkGrad)" rx="2"/>
     <ellipse cx="622" cy="710" rx="26" ry="32" fill="#1a5c38" opacity=".7"/>
@@ -755,7 +655,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     <ellipse cx="812" cy="694" rx="20" ry="24" fill="#2d8055" opacity=".65"/>
   </g>
 
-  <!-- Birds -->
   <g opacity=".35" style="animation:drift 18s ease-in-out infinite">
     <path d="M340,180 Q346,174 352,180" stroke="#1a5c38" stroke-width="1.5" fill="none"/>
     <path d="M360,172 Q366,166 372,172" stroke="#1a5c38" stroke-width="1.5" fill="none"/>
@@ -766,7 +665,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     <path d="M1058,148 Q1064,142 1070,148" stroke="#236b44" stroke-width="1.5" fill="none"/>
   </g>
 
-  <!-- Floating Leaves -->
   <g style="animation:floatLeaf 7s ease-in-out infinite">
     <ellipse cx="420" cy="300" rx="10" ry="6" fill="#4aab74" opacity=".25" transform="rotate(-30,420,300)"/>
   </g>
@@ -777,7 +675,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     <ellipse cx="680"  cy="200" rx="7" ry="4" fill="#3a9466" opacity=".18" transform="rotate(-15,680,200)"/>
   </g>
 
-  <!-- Water Ripple Animation -->
   <circle cx="720" cy="852" r="30" fill="none" stroke="#7fbcd8" stroke-width="1" opacity="0">
     <animate attributeName="r"       values="20;80"  dur="4s" repeatCount="indefinite"/>
     <animate attributeName="opacity" values="0.4;0"  dur="4s" repeatCount="indefinite"/>
@@ -793,15 +690,12 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 </svg>
 </div>
 
-<!-- ════ CANVAS PARTICLES ════ -->
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-<!-- ════ SCRIM ════ -->
 <div id="bg-scrim" aria-hidden="true"></div>
 
 <main class="page">
 
-  <!-- Brand bar — file _2 layout + file _4 info panel -->
   <div class="brand-bar">
     <div class="brand-left">
       <div class="brand-logo" aria-hidden="true">
@@ -814,7 +708,7 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
       <div class="brand-sep" aria-hidden="true"></div>
       <span class="brand-tagline">Earth · Hydro · Management</span>
     </div>
-    <!-- Top-right info panel from file _4 -->
+
     <nav class="info-panel" aria-label="EHM quick info">
       <div class="info-cell">
         <div class="info-cell-icon" aria-hidden="true">
@@ -854,7 +748,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     </nav>
   </div>
 
-  <!-- Header -->
   <div class="header-block">
     <div class="section-badge">
       <span class="badge-dot" aria-hidden="true"></span>
@@ -864,7 +757,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     <p class="tagline">Bridging ecological science with strategic advisory — helping organisations build a resilient, climate-ready future.</p>
   </div>
 
-  <!-- Stats -->
   <div class="stats-row" role="list" aria-label="Company highlights">
     <div class="stat-item" role="listitem">
       <div class="stat-num" data-count="5" data-suffix="+">0+</div>
@@ -886,11 +778,9 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 
   <div class="section-rule" aria-hidden="true"></div>
 
-  <!-- ════ FLIP CARDS ════ -->
   <section id="services" aria-label="EHM consulting services">
     <div class="grid">
 
-      <!-- CARD 1: Sustainability Assessment -->
       <div class="flip-wrap" data-delay="0"
            style="--card-accent:var(--g800);--card-light:var(--g200);--card-pale:var(--g50);
                   --card-bg1:#0d3320;--card-bg2:#1a5c38">
@@ -961,12 +851,11 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
         </div>
       </div>
 
-      <!-- CARD 2: Climate Risk Intelligence -->
       <div class="flip-wrap" data-delay="150"
            style="--card-accent:var(--t700);--card-light:var(--t200);--card-pale:var(--t50);
                   --card-bg1:#0d2a2a;--card-bg2:#1a6b6b">
         <div class="flip-inner" role="group" aria-label="Climate Risk Intelligence service card">
-          <!-- FRONT -->
+          
           <div class="flip-front" tabindex="0"
                aria-label="Climate Risk Intelligence — hover or tap to flip for more details">
             <div class="f-bar"    aria-hidden="true"></div>
@@ -1031,9 +920,8 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
           </div>
         </div>
       </div>
-
-      <!-- CARD 3: Urban Planning & EIA -->
-      <div class="flip-wrap" data-delay="300"
+      
+       <div class="flip-wrap" data-delay="300"
            style="--card-accent:var(--e700);--card-light:var(--e200);--card-pale:var(--e50);
                   --card-bg1:#2a1a0d;--card-bg2:#7a5230">
         <div class="flip-inner" role="group" aria-label="Urban Planning and EIA service card">
@@ -1107,7 +995,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
     </div>
   </section>
 
-  <!-- CTA Strip -->
   <div class="cta" role="complementary" aria-label="Contact EHM Consultancy">
     <div class="cta-orb1"  aria-hidden="true"></div>
     <div class="cta-orb2"  aria-hidden="true"></div>
@@ -1138,7 +1025,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
 
 </main>
 
-<!-- ════ CONTACT MODAL ════ -->
 <div class="modal-backdrop" id="contact-modal"
      role="dialog" aria-modal="true" aria-labelledby="cm-h2">
   <div class="modal">
@@ -1208,7 +1094,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   </div>
 </div>
 
-<!-- ════ SERVICE MODAL ════ -->
 <div class="modal-backdrop" id="service-modal"
      role="dialog" aria-modal="true" aria-labelledby="sm-h2">
   <div class="modal" id="svc-modal-box">
@@ -1278,9 +1163,7 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   </div>
 </div>
 
-<!-- ════ SCRIPTS ════ -->
 <script>
-/* 1. CANVAS — soft nature particles */
 (function(){
   const cv=document.getElementById('bg-canvas');
   const cx=cv.getContext('2d');
@@ -1316,7 +1199,6 @@ h1 em{font-style:italic;font-weight:700;color:var(--g800)}
   frame();
 })();
 
-/* 2. INTERSECTION OBSERVERS */
 const io=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting)return;
@@ -1328,7 +1210,6 @@ const io=new IntersectionObserver(entries=>{
 document.querySelectorAll('.brand-bar,.header-block,.stats-row,.section-rule,.flip-wrap,.cta')
         .forEach(el=>io.observe(el));
 
-/* 3. ANIMATED COUNTERS */
 const io2=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting)return;
@@ -1344,7 +1225,6 @@ const io2=new IntersectionObserver(entries=>{
 },{threshold:.5});
 document.querySelectorAll('[data-count]').forEach(el=>io2.observe(el));
 
-/* 4. TOUCH FLIP for mobile */
 document.querySelectorAll('.flip-wrap').forEach(wrap=>{
   wrap.addEventListener('click',e=>{
     if(e.target.closest('button,.b-btn'))return;
@@ -1357,7 +1237,6 @@ document.querySelectorAll('.flip-wrap').forEach(wrap=>{
   });
 });
 
-/* 5. MODAL DATA & LOGIC */
 const SVC={
   green:{
     badge:'Sustainability Assessment',
